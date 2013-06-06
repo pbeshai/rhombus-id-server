@@ -3,7 +3,6 @@ package ca.ubc.clicker.server.filters;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.LinkedList;
 
 import ca.ubc.clicker.client.ClickerClient;
 import ca.ubc.clicker.server.io.BaseIOServer;
