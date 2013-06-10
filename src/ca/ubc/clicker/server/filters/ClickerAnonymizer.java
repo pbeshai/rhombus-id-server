@@ -31,7 +31,7 @@ public class ClickerAnonymizer extends BaseIOServer {
 	private static final String ALIAS_TABLE_FILE = "sql/create.sql";
 	private static final String DATABASE_NAME = "anonymizer.db";
 	
-	private static final String SQL_SELECT_ALIAS = "SELECT alias FROM alias WHERE serverId=?";
+	private static final String SQL_SELECT_ALIAS = "SELECT alias FROM alias WHERE participantId=?";
 	
 	private String clickerServerHost;
 	private int clickerServerPort;

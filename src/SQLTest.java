@@ -13,6 +13,7 @@ public class SQLTest
 {
 	private static final String ALIAS_TABLE = "alias";
 	private static final String ALIAS_TABLE_FILE = "sql/create.sql";
+	private static final String DATABASE_FILE = "anonymizer.db";
 	
 	public static void createTableSafe(Connection connection, String table, String sqlFile) throws SQLException, FileNotFoundException {
 		SqlRunner runner = new SqlRunner(connection, new PrintWriter(System.out), new PrintWriter(System.err), true, true);
@@ -35,7 +36,7 @@ public class SQLTest
 		try
 		{
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:" + DATABASE_FILE);
 
 			createTableSafe(connection, ALIAS_TABLE, ALIAS_TABLE_FILE);
 
@@ -47,7 +48,7 @@ public class SQLTest
 			{
 				// read the result set
 				System.out.println("id = " + rs.getInt("id"));
-				System.out.println("serverId = " + rs.getString("serverId"));
+				System.out.println("participantId = " + rs.getString("participantId"));
 				System.out.println("alias = " + rs.getString("alias"));
 				System.out.println("----------");
 			}
