@@ -1,0 +1,50 @@
+/** Status bar **/
+.server-status {
+	background: #eee;
+	border: 1px solid #ccc;
+	border-top: 0;
+	padding: 10px;
+}
+
+.server-status.server-status-tiny {
+	padding: 2px;
+	line-height: .75em;
+	font-size: .75em;
+}
+
+.server-status.server-status-tiny li {
+	line-height: .75em;
+}
+
+.server-status ul {
+	margin-bottom: 0;
+}
+
+.circle-status {
+	width: 1em;
+	height: 1em;
+	display: inline-block;
+	border-radius: .5em;
+	background-color: #ccc;
+	vertical-align: text-top;
+	margin-top: 1px;
+}
+
+.circle-status.status-on {
+	background-color: #5bb75b;
+}
+.circle-status.status-off {
+	background-color: #da4f49;
+}
+
+.not-connected > .accepting-choices {
+	display: none;
+}
+
+.v-spacing ,.bottom-spacing {
+	margin-bottom: 12px;
+}
+
+.v-spacing, .top-spacing {
+	margin-top: 12px;
+}
