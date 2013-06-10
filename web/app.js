@@ -7,6 +7,7 @@ var express = require('express')
   , server = http.createServer(app)
   , io = require('socket.io').listen(server)
   , websocketHandler = require('./socket/websocket_handler')
+  , api = require('./api_handler')
   , path = require('path');
 
 
@@ -20,6 +21,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
+app.use(express.bodyParser());
+api.initialize(app);
 
 // start the http server
 server.listen(app.get('port'), function(){

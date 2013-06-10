@@ -9,7 +9,7 @@
   app.modules.Participant = Participant;
 
   Participant.Model = Backbone.Model.extend({
-    url: "/api/participant",
+    url: "/api/alias",
 
     validate: function (attrs, options) {
       if (_.isEmpty(attrs.alias)) {
@@ -22,7 +22,7 @@
   });
 
   Participant.Collection = Backbone.Collection.extend({
-    url: "/api/participant/list",
+    url: "/api/alias/list",
   	model: Participant.Model,
     aliasMap: {},
 

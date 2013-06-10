@@ -19,7 +19,7 @@
         participants: new Participant.Collection(),
       };
 
-     collections.participants.add({ serverId: "Peter", alias: "pbesh" });
+
       // Ensure the router has references to the collections.
       _.extend(this, collections);
 
@@ -36,7 +36,7 @@
 
     index: function () {
       console.log("[router: index]");
-      // this.participants.fetch();
+      this.participants.fetch();
       app.layout.render();
       console.log("rendered");
     }
