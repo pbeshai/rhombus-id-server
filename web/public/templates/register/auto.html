@@ -1,6 +1,6 @@
 <h4>Automatic Registration</h4>
 <p>
-	When started, choices sent from the Participation Server will populate the server ID field,
+	When started, choices sent from the Participation Server will populate the participant ID field,
 	while the alias is generated from the prefix and an internal counter. The first choice
 	received will populate the field, a second consecutive choice submits the registration (i.e.,
 	it does the same as clicking the Register button.)
@@ -20,9 +20,9 @@
 		</div>
 	</div>
 	<div class="control-group">
-		<label for="auto-reg-server-id">Server ID</label>
+		<label for="auto-reg-participant-id">Participant ID</label>
 		<div class="controls">
-			<input type="text" id="auto-reg-server-id" class="input-small server-id" value="<%= model.get("serverId") %>" />
+			<input type="text" id="auto-reg-participant-id" class="input-small participant-id" value="<%= model.get("participantId") %>" />
 		</div>
 	</div>
 	<div class="control-group">

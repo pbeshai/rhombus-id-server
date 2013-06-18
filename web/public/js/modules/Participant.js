@@ -15,8 +15,8 @@
       if (_.isEmpty(attrs.alias)) {
         return "cannot have empty alias"
       }
-      if (_.isEmpty(attrs.serverId)) {
-        return "cannot have empty serverId"
+      if (_.isEmpty(attrs.participantId)) {
+        return "cannot have empty participantId"
       }
     }
   });

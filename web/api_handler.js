@@ -45,11 +45,11 @@ function registerAlias(req, res) {
 	dbCall(function (db) {
 		// TODO: probably should be more secure....
 		var params = {
-			$serverId: req.body.serverId,
+			$participantId: req.body.participantId,
 			$alias: req.body.alias
 		};
 
-		db.run("INSERT INTO alias (serverId, alias) VALUES ($serverId, $alias)", params,
+		db.run("INSERT INTO alias (participantId, alias) VALUES ($participantId, $alias)", params,
 			function (err) {
 				if (err) {
 					console.log(err);

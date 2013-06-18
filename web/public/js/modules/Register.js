@@ -12,7 +12,7 @@ Registering participants
   function updateModel(data, alias) {
     // check if we already have this guy
     var exists = this.collection.find(function (elem) {
-      return elem.get("serverId") === data.id;
+      return elem.get("participantId") === data.id;
     });
 
     if (exists) {
@@ -22,7 +22,7 @@ Registering participants
       return false;
     }
 
-    this.model.set("serverId", data.id);
+    this.model.set("participantId", data.id);
     if (alias) {
       this.model.set("alias", alias);
     }
@@ -34,7 +34,7 @@ Registering participants
 
     events: {
       "click .register-submit" : "register",
-      "change .server-id": "hideAlert"
+      "change .participant-id": "hideAlert"
     },
 
     hideAlert: function () {
@@ -42,14 +42,14 @@ Registering participants
     },
 
     listenForId: function (event) {
-      console.log("listen for server id", this);
-      this.model.set("serverId", "");
-      this.$("input.server-id").attr("placeholder", "Listening...").prop("disabled", true);
+      console.log("listen for participant id", this);
+      this.model.set("participantId", "");
+      this.$("input.participant-id").attr("placeholder", "Listening...").prop("disabled", true);
       // should be listenToOnce
       this.listenTo(app.participantServer, "data", function (data) {
         this.cancelListen();
         console.log(data[0]);
-        this.$(".listen-server-id").trigger("to-state1");
+        this.$(".listen-participant-id").trigger("to-state1");
 
         updateModel.apply(this, [data.choices[0]]);
       });
@@ -59,17 +59,17 @@ Registering participants
     cancelListen: function () {
       console.log("cancel");
       this.stopListening(app.participantServer, "data");
-      this.$("input.server-id").removeAttr("placeholder").prop("disabled", false);
+      this.$("input.participant-id").removeAttr("placeholder").prop("disabled", false);
     },
 
     register: function (event) {
       event.preventDefault();
 
-      var serverId = this.$("input.server-id").val();
+      var participantId = this.$("input.participant-id").val();
       var alias = this.$("input.alias").val();
 
       this.model.set({
-        "serverId": serverId,
+        "participantId": participantId,
         "alias": alias
       });
 
@@ -77,7 +77,7 @@ Registering participants
     },
 
     afterRender: function () {
-      this.$(".listen-server-id").toggleButton({
+      this.$(".listen-participant-id").toggleButton({
         textState1: "Listen",
         textState2: "Cancel",
         clickState1: this.listenForId,
@@ -90,7 +90,7 @@ Registering participants
       this.listenTo(this.model, {
         change: function () {
           console.log("model changed!");
-          this.$("input.server-id").val(this.model.get("serverId"));
+          this.$("input.participant-id").val(this.model.get("participantId"));
           this.$("input.alias").val(this.model.get("alias"));
         }
        });
@@ -105,7 +105,7 @@ Registering participants
     events: {
       "click .auto-register-submit" : "register",
       "change .prefix" : "updatePrefix",
-      "change .server-id": "hideAlert"
+      "change .participant-id": "hideAlert"
     },
 
     serialize: function () {
@@ -131,14 +131,20 @@ Registering participants
 
       this.listenTo(this.model, {
         change: function () {
-          this.$("input.server-id").val(this.model.get("serverId"));
+          this.$("input.participant-id").val(this.model.get("participantId"));
           this.$("input.alias").val(this.model.get("alias"));
         }
        });
     },
 
     generateAlias: function () {
-      return this.idPrefix+this.counter.toString();
+
+      var num = this.counter;
+      if (num >= 0 && num < 10) { // add leading 0
+        num = "0" + num;
+      }
+
+      return this.idPrefix + num;
     },
 
     updatePrefix: function () {
@@ -167,7 +173,7 @@ Registering participants
         // ensure the prefix is up to date
         var prefixChanged = this.updatePrefix();
 
-        if (!prefixChanged && this.model.get("serverId") === data.choices[0].id) {
+        if (!prefixChanged && this.model.get("participantId") === data.choices[0].id) {
           // no prefix change, but same ID came in => save
           this.register();
         } else {
@@ -185,11 +191,11 @@ Registering participants
         event.preventDefault();
       }
 
-      var serverId = this.$("input.server-id").val();
+      var participantId = this.$("input.participant-id").val();
       var alias = this.$("input.alias").val();
 
       this.model.set({
-        "serverId": serverId,
+        "participantId": participantId,
         "alias": alias
       });
 
@@ -228,7 +234,7 @@ Registering participants
   	},
 
     register: function (participant) {
-      console.log("registering ", participant.get("serverId"), participant.get("alias"));
+      console.log("registering ", participant.get("participantId"), participant.get("alias"));
 
       var participants = this.options.participants;
       var saved = participant.save(null, {
