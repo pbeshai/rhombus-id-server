@@ -1,4 +1,4 @@
-package ca.ubc.clicker.server.filters.util;
+package ca.ubc.clicker.server.aliaser.util;
 
 import java.io.IOException;
 import java.io.LineNumberReader;

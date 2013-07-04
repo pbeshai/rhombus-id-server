@@ -1,4 +1,4 @@
-package ca.ubc.clicker.server.filters;
+package ca.ubc.clicker.server.aliaser;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ca.ubc.clicker.client.ClickerClient;
-import ca.ubc.clicker.server.filters.util.SqlUtil;
+import ca.ubc.clicker.server.aliaser.util.SqlUtil;
 import ca.ubc.clicker.server.io.BaseIOServer;
 import ca.ubc.clicker.server.io.ClickerServerInputThread;
 import ca.ubc.clicker.server.messages.ChoiceMessage;
@@ -23,13 +23,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class ClickerAnonymizer extends BaseIOServer {
+public class ClickerAliaser extends BaseIOServer {
 	private static final int DEFAULT_PORT = 4445;
 	private static final int DEFAULT_CLICKER_SERVER_PORT = 4444;
 	private static final String DEFAULT_CLICKER_SERVER_HOST = "localhost";
 	private static final String ALIAS_TABLE = "alias";
 	private static final String ALIAS_TABLE_FILE = "sql/create.sql";
-	private static final String DATABASE_NAME = "anonymizer.db";
+	private static final String DATABASE_NAME = "aliaser.db";
 	
 	private static final String SQL_SELECT_ALIAS = "SELECT alias FROM alias WHERE participantId=?";
 	
@@ -39,11 +39,11 @@ public class ClickerAnonymizer extends BaseIOServer {
     private JsonParser parser;
     private GsonBuilder gsonBuilder;
     
-	public ClickerAnonymizer() {
+	public ClickerAliaser() {
 		this(DEFAULT_CLICKER_SERVER_HOST, DEFAULT_CLICKER_SERVER_PORT);
 	}
 	
-	public ClickerAnonymizer(String clickerServerHost, int clickerServerPort) {
+	public ClickerAliaser(String clickerServerHost, int clickerServerPort) {
 		super(DEFAULT_PORT);
 		this.clickerServerHost = clickerServerHost;
 		this.clickerServerPort = clickerServerPort;
@@ -53,6 +53,7 @@ public class ClickerAnonymizer extends BaseIOServer {
 
 	@Override
 	public void init() throws IOException {
+		super.init();
 		
 		Socket clickerServer = new Socket(clickerServerHost, clickerServerPort);
 		outClickerServer = new PrintWriter(clickerServer.getOutputStream(), true);
@@ -169,14 +170,14 @@ public class ClickerAnonymizer extends BaseIOServer {
 	}
 	
 	/**
-	 * Usage: java ClickerAnonymizer
+	 * Usage: java ClickerAliaser
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
 		// load the sqlite-JDBC driver using the current class loader
 		Class.forName("org.sqlite.JDBC");
 		
-		ClickerAnonymizer anonymizer = new ClickerAnonymizer();
-		anonymizer.run();
+		ClickerAliaser aliaser = new ClickerAliaser();
+		aliaser.run();
 	}
 }
