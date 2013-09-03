@@ -1,0 +1,9 @@
+{
+	"database": {
+		"filename": "../aliaser.db"
+	},
+
+	"participantServer": {
+		"port": 4444
+	}
+}

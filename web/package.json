@@ -1,16 +1,22 @@
 {
-  "name": "ClickerAnonymizerAdmin",
-  "description": "App for managing the anonymizer database",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node app.js"
-  },
+  "name": "ClickerApp",
+  "version": "0.2.0",
   "dependencies": {
     "lodash": "0.9.2",
-    "express": "3.2.5",
-    "socket.io": "0.9.14",
+    "grunt": "0.4.1",
     "sqlite3": "2.1.7",
     "async": "0.2.9"
+  },
+  "devDependencies": {
+    "grunt-contrib": "~0.7.0",
+    "grunt-contrib-jst": "~0.5.1",
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-contrib-requirejs": "~0.4.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-cssmin": "~0.6.1",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-stylus": "~0.8.0"
   }
 }
