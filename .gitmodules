@@ -1,0 +1,3 @@
+[submodule "web/framework"]
+	path = web/framework
+	url = ssh://pbeshai@remote.cs.ubc.ca/ubc/cs/home/p/pbeshai/git/clickers/clicker_web_framework.git
