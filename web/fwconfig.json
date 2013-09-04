@@ -1,6 +1,7 @@
 {
 	"database": {
-		"filename": "../aliaser.db"
+		"file": "../aliaser.db",
+		"create": "../sql/create.sql"
 	},
 
 	"participantServer": {

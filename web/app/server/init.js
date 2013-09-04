@@ -11,8 +11,8 @@ var fs = require("fs"),
 // function to do extra initialization before starting web server
 function webInit(site, serverOptions) {
 	console.log("app webInit");
-	// console.log("initializing app_results");
-	// require("./app_results").initialize(site, serverOptions);
+	console.log("initializing api_handler");
+	require("./api_handler").initialize(site, fwConfig);
 
 	fwInit.webInit(site, serverOptions, fwConfig);
 }
@@ -20,6 +20,6 @@ function webInit(site, serverOptions) {
 // function to do extra initialization after listening with websocket
 function webSocketInit(io, serverOptions) {
 	console.log("app webSocketInit");
-	io.set('log level', 1); // reduces logging.
+	// io.set('log level', 1); // reduces logging.
 	fwInit.webSocketInit(io, serverOptions, fwConfig);
 }
