@@ -15,7 +15,7 @@ var dbConfig = {
 
 function initialize(site, initConfig) {
 	site.post("/api/alias", registerAlias);
-	site.get("/api/alias/:action", handleAlias)
+	site.get("/api/alias/:action", handleAlias);
 	site.delete("/api/alias", deleteAliases);
 
 	initConfig = initConfig || {};
@@ -67,7 +67,7 @@ function handleAlias(req, res, next) {
 		dbCall(function (db) {
 			db.all("SELECT * FROM alias", function (err, rows) {
 				res.send(rows);
-			})
+			});
 		});
 
 	} else {
