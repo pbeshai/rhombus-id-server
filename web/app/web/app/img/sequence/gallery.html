@@ -20,7 +20,6 @@ var images=["adele.jpg",
 "audrey.jpg",
 "bee.jpg",
 "bond.jpg",
-"boyle.jpg",
 "bruce.jpg",
 "carrey.jpg",
 "cera.jpg",
@@ -41,23 +40,22 @@ var images=["adele.jpg",
 "holmes.jpg",
 "hova.jpg",
 "jackson.jpg",
-"jobs.png",
+"jobs.jpg",
 "jordan.jpg",
-"jt.jpg",
+"timber.jpg",
 "julia.jpg",
 "kanye.jpg",
 "keanu.jpg",
 "leia.jpg",
 "leo.jpg",
+"liz.jpg",
 "lopez.jpg",
 "lucy.jpg",
 "maddy.jpg",
-"mariah.jpg",
 "marilyn.jpg",
 "marley.jpg",
 "martha.jpg",
 "mila.jpg",
-"miley.jpg",
 "murray.jpg",
 "oprah.jpg",
 "owen.jpg",
@@ -66,8 +64,6 @@ var images=["adele.jpg",
 "pitt.jpg",
 "portman.jpg",
 "potter.jpg",
-"psy.jpg",
-"queen.jpg",
 "rdj.jpg",
 "rihanna.jpg",
 "samuel.jpg",
@@ -77,20 +73,18 @@ var images=["adele.jpg",
 "stiller.jpg",
 "swift.jpg",
 "vaughn.jpg",
-"walken.jpg",
 "whoopi.jpg",
 "will.jpg",
-"zooey.jpg",
-"zuck.jpg"]
+"zooey.jpg"]
 
-for (var i = 0; i < images.length; i++) { 
-    var img = document.createElement("img"); 
-    img.src = images[i]; 
+for (var i = 0; i < images.length; i++) {
+    var img = document.createElement("img");
+    img.src = images[i];
     var container = document.createElement("div");
     container.className = "img-container";
     container.innerHTML = images[i].slice(0, -4);
     container.appendChild(img);
-    document.body.appendChild(container); 
+    document.body.appendChild(container);
 }
 </script>
     </body>
