@@ -86,7 +86,7 @@ function (App, Common, Participant, StateApp) {
 			}
 
 			if (img) {
-				img = "/static/img/" + img;
+				img = "/app/img/" + img;
 			}
 			return img;
 		},

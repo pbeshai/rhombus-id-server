@@ -6,17 +6,17 @@ define([
 
   "modules/Register",
 
-  "modules/Participant"
+  "modules/Alias"
 ],
 
-function (App, fwRouter, Register, Participant) {
+function (App, fwRouter, Register, Alias) {
 
   // Defining the application router, you can attach sub routers here.
   var Router = fwRouter.extend({
     initialize: function () {
       fwRouter.prototype.initialize.call(this);
 
-      this.participants = new Participant.Collection();
+      this.aliasCollection = new Alias.Collection();
     },
 
     routes: _.extend({}, fwRouter.prototype.routes, {
@@ -27,10 +27,10 @@ function (App, fwRouter, Register, Participant) {
       console.log("[router: register]");
 
       App.setTitle("Register");
-      this.participants.fetch();
+      this.aliasCollection.fetch();
 
       this.selectMode("standalone", "register").done(_.bind(function () {
-        this.loadStandaloneView(new Register.Views.Register({ participants: this.participants }));
+        this.loadStandaloneView(new Register.Views.Register({ collection: this.aliasCollection }));
       }, this));
     }
   });

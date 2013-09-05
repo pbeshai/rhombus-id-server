@@ -5,9 +5,9 @@ Registering participants
 */
 define([
 	"framework/App",
-	"modules/Participant"
+	"modules/Alias"
 ],
-function(app, Participant) {
+function(app, Alias) {
 
 	var Register = app.module();
 
@@ -222,26 +222,26 @@ function(app, Participant) {
 
 		beforeRender: function () {
 			this.insertViews({
-				".participants": new Participant.Views.Table({ participants: this.options.participants }),
+				".participants": new Alias.Views.Table({ collection: this.collection }),
 				".register-participant": this.currentView
 			});
 		},
 
 		initialize: function () {
-			this.currentView = new Register.Views.FormRegistration({ model: new Participant.Model(), collection: this.options.participants });
+			this.currentView = new Register.Views.FormRegistration({ model: new Alias.Model(), collection: this.collection });
 
 			this.on("save-registration", this.register);
 		},
 
-		register: function (participant) {
-			console.log("registering ", participant.get("participantId"), participant.get("alias"));
+		register: function (aliasModel) {
+			console.log("registering ", aliasModel.get("participantId"), aliasModel.get("alias"));
 
-			var participants = this.options.participants;
-			var saved = participant.save(null, {
+			var aliasCollection = this.collection;
+			var saved = aliasModel.save(null, {
 				success: function () {
 					console.log("successfully saved!");
-					participants.fetch();
-					participant.clear();
+					aliasCollection.fetch();
+					aliasModel.clear();
 				},
 				error: function () {
 					console.log("error saving", arguments);
@@ -249,7 +249,7 @@ function(app, Participant) {
 			});
 
 			if (!saved) {
-				console.log("didn't save: " +participant.validationError);
+				console.log("didn't save: " + aliasModel.validationError);
 			}
 		},
 
@@ -260,14 +260,14 @@ function(app, Participant) {
 
 		manualRegistration: function () {
 			if (!(this.currentView instanceof Register.Views.FormRegistration)) {
-				this.currentView = new Register.Views.FormRegistration({ model: new Participant.Model(), collection: this.options.participants });
+				this.currentView = new Register.Views.FormRegistration({ model: new Alias.Model(), collection: this.collection });
 				this.updateRegistrationView();
 			}
 		},
 
 		autoRegistration: function () {
 			if (!(this.currentView instanceof Register.Views.AutoRegistration)) {
-				this.currentView = new Register.Views.AutoRegistration({ model: new Participant.Model(), collection: this.options.participants });
+				this.currentView = new Register.Views.AutoRegistration({ model: new Alias.Model(), collection: this.collection });
 				this.updateRegistrationView();
 			}
 		}
