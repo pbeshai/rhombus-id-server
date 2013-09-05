@@ -29,7 +29,7 @@ function (App, fwRouter, Register, Alias) {
       App.setTitle("Register");
       this.aliasCollection.fetch();
 
-      this.selectMode({mode: "controller", managerId: "register", hasView: true }).done(_.bind(function () {
+      this.selectMode({ mode: "controller", managerId: "register", hasView: true }).done(_.bind(function () {
         this.loadControllerView(new Register.Views.Register({ collection: this.aliasCollection }));
       }, this));
     }

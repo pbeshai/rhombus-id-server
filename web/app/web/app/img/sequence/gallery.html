@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+    <head>
+        <title>People Gallery</title>
+        <style>
+body { background: #f3f0f0; }
+img { max-width: 100px; max-height: 100px; vertical-align: top; display: block; margin: 5px auto 0; }
+.img-container { width: 100px; height: 125px; margin: 20px; display: inline-block; text-align: center; border: 1px solid #e9e9e9;
+padding: 5px; position:relative; font-family: 'helvetica neue'; font-weight: 200; background: #fff; }
+</style>
+    </head>
+    <body>
+
+<script>
+var images=["adele.jpg",
+"alba.jpg",
+"angie.jpg",
+"aniston.jpg",
+"arnie.jpg",
+"audrey.jpg",
+"bee.jpg",
+"bond.jpg",
+"boyle.jpg",
+"bruce.jpg",
+"carrey.jpg",
+"cera.jpg",
+"cruise.jpg",
+"cruz.jpg",
+"deniro.jpg",
+"depp.jpg",
+"diaz.jpg",
+"ellen.jpg",
+"elvis.jpg",
+"fey.jpg",
+"ford.jpg",
+"freeman.jpg",
+"gaga.jpg",
+"gates.jpg",
+"gosling.jpg",
+"halle.jpg",
+"holmes.jpg",
+"hova.jpg",
+"jackson.jpg",
+"jobs.png",
+"jordan.jpg",
+"jt.jpg",
+"julia.jpg",
+"kanye.jpg",
+"keanu.jpg",
+"leia.jpg",
+"leo.jpg",
+"lopez.jpg",
+"lucy.jpg",
+"maddy.jpg",
+"mariah.jpg",
+"marilyn.jpg",
+"marley.jpg",
+"martha.jpg",
+"mila.jpg",
+"miley.jpg",
+"murray.jpg",
+"oprah.jpg",
+"owen.jpg",
+"perry.jpg",
+"pink.jpg",
+"pitt.jpg",
+"portman.jpg",
+"potter.jpg",
+"psy.jpg",
+"queen.jpg",
+"rdj.jpg",
+"rihanna.jpg",
+"samuel.jpg",
+"scarjo.jpg",
+"spears.jpg",
+"spock.jpg",
+"stiller.jpg",
+"swift.jpg",
+"vaughn.jpg",
+"walken.jpg",
+"whoopi.jpg",
+"will.jpg",
+"zooey.jpg",
+"zuck.jpg"]
+
+for (var i = 0; i < images.length; i++) { 
+    var img = document.createElement("img"); 
+    img.src = images[i]; 
+    var container = document.createElement("div");
+    container.className = "img-container";
+    container.innerHTML = images[i].slice(0, -4);
+    container.appendChild(img);
+    document.body.appendChild(container); 
+}
+</script>
+    </body>
+
+</html>

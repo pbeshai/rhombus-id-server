@@ -21,9 +21,70 @@ function (App, Common, Participant, StateApp) {
 	SequenceAliaser.config = {
 		sequenceLength: 4,
 		sequenceAliasMap: {
-			"ABCD": "Kelly",
-			"AAAA": "Peter",
-			"BBBB": "Junhao"
+	    "AAAD":"leo",
+	    "AABC":"watson",
+	    "AACA":"jordan",
+	    "AADB":"zooey",
+	    "ABAA":"angie",
+	    "ABBB":"perry",
+	    "ABCD":"stiller",
+	    "ABDC":"pink",
+	    "ACAC":"halle",
+	    "ACBD":"lopez",
+	    "ACCB":"marilyn",
+	    "ACDA":"spears",
+	    "ADAB":"aniston",
+	    "ADBA":"spock",
+	    "ADCC":"freeman",
+	    "ADDD":"pitt",
+	    "BAAA":"will",
+	    "BABB":"lucy",
+	    "BACD":"rihanna",
+	    "BADC":"cera",
+	    "BBAD":"swift",
+	    "BBBC":"depp",
+	    "BBCA":"adele",
+	    "BBDB":"gosling",
+	    "BCAB":"jackson",
+	    "BCBA":"keanu",
+	    "BCCC":"potter",
+	    "BCDD":"cruise",
+	    "BDAC":"arnie",
+	    "BDBD":"diaz",
+	    "BDCB":"murray",
+	    "BDDA":"cruz",
+	    "CAAB":"bee",
+	    "CABA":"leia",
+	    "CACC":"hova",
+	    "CADD":"scarlett",
+	    "CBAC":"audrey",
+	    "CBBD":"elvis",
+	    "CBCB":"deniro",
+	    "CBDA":"rdj",
+	    "CCAA":"holmes",
+	    "CCBB":"timber",
+	    "CCCD":"gates",
+	    "CCDC":"kanye",
+	    "CDAD":"jobs",
+	    "CDBC":"fey",
+	    "CDCA":"owen",
+	    "CDDB":"stone",
+	    "DAAC":"portman",
+	    "DABD":"julia",
+	    "DACB":"alba",
+	    "DADA":"queen",
+	    "DBAB":"maddy",
+	    "DBBA":"vaughn",
+	    "DBCC":"oprah",
+	    "DBDD":"gaga",
+	    "DCAD":"ellen",
+	    "DCBC":"marley",
+	    "DCCA":"ford",
+	    "DCDB":"bruce",
+	    "DDAA":"carrey",
+	    "DDBB":"bond",
+	    "DDCD":"samuel",
+	    "DDDC":"mila"
 		}
 	};
 
@@ -72,21 +133,10 @@ function (App, Common, Participant, StateApp) {
 		},
 
 		image: function (model) {
-			var img;
-			switch (model.get("seqAlias")) {
-				case "Kelly":
-					img = "kelly.jpg";
-					break;
-				case "Peter":
-					img = "peter.jpg";
-					break;
-				case "Junhao":
-					img = "junhao.jpg";
-					break;
-			}
+			var img = model.get("seqAlias");
 
 			if (img) {
-				img = "/app/img/" + img;
+				img = "/app/img/sequence/" + img + ".jpg";
 			}
 			return img;
 		},
