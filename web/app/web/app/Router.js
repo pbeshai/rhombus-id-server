@@ -29,8 +29,8 @@ function (App, fwRouter, Register, Alias) {
       App.setTitle("Register");
       this.aliasCollection.fetch();
 
-      this.selectMode("standalone", "register").done(_.bind(function () {
-        this.loadStandaloneView(new Register.Views.Register({ collection: this.aliasCollection }));
+      this.selectMode({mode: "controller", managerId: "register", hasView: true }).done(_.bind(function () {
+        this.loadControllerView(new Register.Views.Register({ collection: this.aliasCollection }));
       }, this));
     }
   });
