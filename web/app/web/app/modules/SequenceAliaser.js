@@ -8,13 +8,13 @@ define([
 	"framework/App",
 
 	"framework/modules/common/Common",
-
 	"framework/modules/Participant",
-
 	"framework/apps/StateApp",
+
+	"modules/Alias"
 ],
 
-function (App, Common, Participant, StateApp) {
+function (App, Common, Participant, StateApp, Alias) {
 
 	var SequenceAliaser = App.module();
 
@@ -141,7 +141,6 @@ function (App, Common, Participant, StateApp) {
 					}
 					return output;
 				}
-
 			}
 		},
 
@@ -263,7 +262,7 @@ function (App, Common, Participant, StateApp) {
 			// reset any previous actions
 			input.participants.each(function (p) {
 				p.unset("action");
-			})
+			});
 
 			StateApp.ViewState.prototype.onEntry.apply(this, arguments);
 		},
@@ -296,6 +295,12 @@ function (App, Common, Participant, StateApp) {
 			Common.States.Results.prototype.beforeRender.call(this);
 
 			console.log("@@ registering aliases", this);
+			var aliases = this.participants.map(function (p) {
+				return new Alias.Model({ alias: p.get("seqAlias"), participantId: p.get("alias") });
+			});
+			console.log(aliases);
+			var aliasCollection = new Alias.Collection(aliases);
+			window.aliasCollection =aliasCollection;
 		}
 	});
 

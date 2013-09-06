@@ -14,8 +14,9 @@ var dbConfig = {
 };
 
 function initialize(site, initConfig) {
-	site.post("/api/alias", registerAlias);
-	site.get("/api/alias/:action", handleAlias);
+	site.post("/api/alias", registerAliases);
+	site.put("/api/alias", updateAliases);
+	site.get("/api/alias", listAliases);
 	site.delete("/api/alias", deleteAliases);
 
 	initConfig = initConfig || {};
@@ -37,42 +38,63 @@ function deleteAliases(req, res) {
 	});
 }
 
-function registerAlias(req, res) {
-	console.log("saving alias ", req.body);
-
-	dbCall(function (db) {
-		// TODO: probably should be more secure....
-		var params = {
-			$participantId: req.body.participantId,
-			$alias: req.body.alias
-		};
-
-		db.run("INSERT INTO alias (participantId, alias) VALUES ($participantId, $alias)", params,
-			function (err) {
-				if (err) {
-					console.log(err);
-					res.send(500);
-				} else {
-					res.send(200, "");
-				}
-			});
-	});
+function updateAliases(req, res) {
+	console.log("UPDATE ALIASES");
+	return registerAliases(req, res);
 }
 
-function handleAlias(req, res, next) {
-	console.log("alias handler! ", req.params.action, req.params);
-	var action = req.params.action;
-	if (action === "list") {
-		// list all aliases
-		dbCall(function (db) {
-			db.all("SELECT * FROM alias", function (err, rows) {
-				res.send(rows);
+// supports either an array of aliases or an object (single alias)
+function registerAliases(req, res) {
+	console.log("saving aliases", req.body);
+
+	if (req.body == null) return;
+
+	var participants = _.isArray(req.body) ? req.body : [req.body];
+
+	dbCall(function (db) {
+		var statement = db.prepare("INSERT INTO alias (participantId, alias) VALUES ($participantId, $alias)");
+		var errors = [];
+		_.each(participants, function (participant) {
+			// TODO: probably should be more secure....
+			var params = {
+				$alias: participant.alias,
+				$participantId: participant.participantId,
+			};
+			statement.run(params, function (err) {
+				if (err) {
+					console.log(err); // TODO: figure out how to interpret errors.
+					debugger;
+					errors.push(err);
+				}
 			});
 		});
 
-	} else {
-		res.send(404);
-	}
+		// send response after all participants have been added
+		statement.finalize(function (err) {
+			if (err || errors.length) {
+				if (err) {
+					console.log(err);
+				}
+				if (errors.length) {
+					console.log(errors);
+				}
+
+				res.send(500, errors);
+			} else {
+				res.send(200, "");
+			}
+		});
+	});
+}
+
+
+function listAliases(req, res) {
+	// list all aliases
+	dbCall(function (db) {
+		db.all("SELECT * FROM alias", function (err, rows) {
+			res.send(rows);
+		});
+	});
 }
 
 

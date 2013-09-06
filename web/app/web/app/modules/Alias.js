@@ -11,7 +11,7 @@ function(app) {
 	var Alias = app.module();
 
 	Alias.Model = Backbone.Model.extend({
-		url: "/api/alias",
+		urlRoot: "/api/alias",
 
 		validate: function (attrs, options) {
 			if (_.isEmpty(attrs.alias)) {
@@ -24,8 +24,19 @@ function(app) {
 	});
 
 	Alias.Collection = Backbone.Collection.extend({
-		url: "/api/alias/list",
-		model: Alias.Model
+		url: "/api/alias",
+		model: Alias.Model,
+
+		save: function () {
+			if (this.length) {
+				console.log("saving aliases", this);
+				return Backbone.sync("update", this, {
+					url: this.url,
+					success: _.bind(this.reset, this),
+					error: _.bind(this.reset, this)
+				});
+			}
+		}
 	});
 
 	Alias.Views.TableItem = Backbone.View.extend({
