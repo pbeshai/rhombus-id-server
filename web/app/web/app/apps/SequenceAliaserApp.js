@@ -15,7 +15,7 @@ function (App, StateApp, CommonStateApps, SequenceAliaser) {
 		id: "seq-alias",
 		version: "1.0",
 		config: SequenceAliaser.config,
-		States: [ SequenceAliaser.State ],
+		States: [ SequenceAliaser.States.Sequence, SequenceAliaser.States.Register ],
 		prepend: { },
 
 		initStateOptions: function () {
