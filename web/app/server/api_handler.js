@@ -53,24 +53,94 @@ function registerAliases(req, res) {
 
 	dbCall(function (db) {
 		var statement = db.prepare("INSERT INTO alias (participantId, alias) VALUES ($participantId, $alias)");
+		var updateStatement = db.prepare("UPDATE alias SET alias=$alias WHERE participantId=$participantId");
+		var checkStatement = db.prepare("SELECT count(*) FROM alias WHERE participantId=$participantId AND alias=$alias");
 		var errors = [];
-		_.each(participants, function (participant) {
-			// TODO: probably should be more secure....
-			var params = {
-				$alias: participant.alias,
-				$participantId: participant.participantId,
-			};
-			statement.run(params, function (err) {
-				if (err) {
-					console.log(err); // TODO: figure out how to interpret errors.
-					debugger;
-					errors.push(err);
+		var updates = [];
+		var checkDuplicates = [];
+		var duplicates = [];
+		insert();
+
+		function insert() {
+			console.log("insert");
+			_.each(participants, function (participant) {
+				// TODO: probably should be more secure....
+				var params = {
+					$alias: participant.alias,
+					$participantId: participant.participantId,
+				};
+				statement.run(params, function (err) {
+					if (err) {
+						if (err.errno === 19 && err.toString().match("column alias is not unique")) {
+							// somebody has this alias (possibly this participantId)
+							checkDuplicates.push(params);
+							console.log("alias not unique", params);
+						} else if (err.errno === 19 && err.toString().match("column participantId is not unique")) {
+							// update the participantId to use the new alias
+							updates.push(params);
+							console.log("participantId not unique", params);
+						}	else {
+							console.log("error", err, params);
+							errors.push(err);
+						}
+					}
+				});
+			});
+
+			// send response after all participants have been added
+			statement.finalize(function (err) {
+				if (updates.length) {
+					update();
+				} else if (checkDuplicates.length) {
+					check();
+				} else {
+					sendResponse(err);
 				}
 			});
-		});
+		}
 
-		// send response after all participants have been added
-		statement.finalize(function (err) {
+		function update() {
+			console.log("update", updates);
+			_.each(updates, function (params) {
+				updateStatement.run(params, function (err) {
+					console.log("ran update", this.changes, params);
+					if (err) {
+						errors.push(err);
+					}
+				});
+			});
+
+			updateStatement.finalize(function (err) {
+				if (checkDuplicates.length) {
+					check();
+				} else {
+					sendResponse(err);
+				}
+			});
+		}
+
+		function check() {
+			console.log("check", checkDuplicates);
+			_.each(checkDuplicates, function (params) {
+				checkStatement.get(params, function (err, row) {
+					console.log("ran check", err, this.changes, params);
+					if (row["count(*)"]) {
+						console.log("ALREADY IN DB", params);
+					} else {
+						console.log("ALIAS DUPLICATED ERROR", params);
+						duplicates.push({ alias: params["$alias"], participantId: params["$participantId"]});
+					}
+					if (err) {
+						errors.push(err);
+					}
+				});
+			});
+
+			checkStatement.finalize(sendResponse);
+		}
+
+		function sendResponse(err) {
+			console.log("sending response");
 			if (err || errors.length) {
 				if (err) {
 					console.log(err);
@@ -81,9 +151,9 @@ function registerAliases(req, res) {
 
 				res.send(500, errors);
 			} else {
-				res.send(200, "");
+				res.send(200, { duplicates: duplicates });
 			}
-		});
+		}
 	});
 }
 
