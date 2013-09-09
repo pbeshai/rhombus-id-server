@@ -4,7 +4,7 @@
 define([
 	"framework/App",
 
-	"apps/GridApp",
+	"framework/apps/GridApp",
 	"apps/SequenceAliaserApp"
 ],
 function (App, GridApp, SequenceAliaserApp) {
