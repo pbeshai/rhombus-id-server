@@ -27,14 +27,14 @@ function(app) {
 		url: "/api/alias",
 		model: Alias.Model,
 
-		save: function () {
+		save: function (options) {
 			if (this.length) {
 				console.log("saving aliases", this);
-				return Backbone.sync("update", this, {
+				return Backbone.sync("update", this, _.extend({
 					url: this.url,
 					success: _.bind(this.reset, this),
 					error: _.bind(this.reset, this)
-				});
+				}, options));
 			}
 		}
 	});

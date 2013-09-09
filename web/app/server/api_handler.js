@@ -128,7 +128,7 @@ function registerAliases(req, res) {
 						console.log("ALREADY IN DB", params);
 					} else {
 						console.log("ALIAS DUPLICATED ERROR", params);
-						duplicates.push({ alias: params["$alias"], participantId: params["$participantId"]});
+						duplicates.push({ alias: params.$alias, participantId: params.$participantId });
 					}
 					if (err) {
 						errors.push(err);
@@ -149,9 +149,13 @@ function registerAliases(req, res) {
 					console.log(errors);
 				}
 
-				res.send(500, errors);
+				res.send(500);
 			} else {
-				res.send(200, { duplicates: duplicates });
+				var result = {};
+				if (duplicates.length) {
+					result.duplicates = duplicates;
+				}
+				res.send(200, result);
 			}
 		}
 	});

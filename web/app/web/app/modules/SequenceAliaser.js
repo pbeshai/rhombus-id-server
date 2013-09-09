@@ -165,7 +165,11 @@ function (App, Common, Participant, StateApp, Alias) {
 	SequenceAliaser.Views.Register = {};
 	SequenceAliaser.Views.Register.Participant = Common.Views.ParticipantImageDisplay.extend({
 		overlay: function (model) {
-			return "green";
+			if (model.get("saved")) {
+				return "green";
+			} else if (model.get("saved") === false) {
+				return "cancel";
+			}
 		},
 
 		idText: function (model) {
@@ -173,7 +177,9 @@ function (App, Common, Participant, StateApp, Alias) {
 		},
 
 		mainText: function (model) {
-			return "&#x2713;"; // checkmark
+			if (model.get("saved")) {
+				return "&#x2713;"; // checkmark
+			}
 		},
 
 		image: function (model) {
@@ -294,13 +300,31 @@ function (App, Common, Participant, StateApp, Alias) {
 		beforeRender: function () {
 			Common.States.Results.prototype.beforeRender.call(this);
 
-			console.log("@@ registering aliases", this);
 			var aliases = this.participants.map(function (p) {
 				return new Alias.Model({ alias: p.get("seqAlias"), participantId: p.get("alias") });
 			});
-			console.log(aliases);
+
+			var participants = this.participants;
+
 			var aliasCollection = new Alias.Collection(aliases);
-			window.aliasCollection =aliasCollection;
+
+			// save to the database and update the participants to show if they were saved successfully
+			aliasCollection.save({ success: function (collection, data) {
+				var duplicates = _.pluck(data.duplicates, "participantId");
+
+				participants.each(function (p) {
+					if (_.contains(duplicates, p.get("alias"))) {
+						p.set("saved", false);
+					} else {
+						p.set("saved", true);
+					}
+				});
+			}});
+		},
+
+		cleanup: function () {
+			Common.States.Results.prototype.cleanup.call(this);
+			this.participants.each(function (p) { p.set("saved", null); });
 		}
 	});
 
