@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+    <head>
+        <title>People Gallery</title>
+<style>
+.pagebreak {
+  page-break-before: always;
+}
+
+body {
+  font-family: 'helvetica neue', arial, sans-serif;
+}
+.slip img {
+  float: left;
+  width: 150px;
+  height: 150px;
+  margin-right: 20px;
+}
+
+.slip {
+  width: 600px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.slip:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+
+th {
+  text-align: left;
+}
+th,td {
+  vertical-align: top;
+  padding: 0 5px 15px 0;
+  margin: 0;
+  font-size: 18px;
+}
+
+table {
+  margin-top: 5px;
+}
+.sequence {
+  letter-spacing: 10px;
+}
+
+p {
+  font-size: 14px;
+}
+p:last-child {
+  margin-bottom: 0;
+}
+
+</style>
+    </head>
+    <body>
+<script id="slip-template" type="text/template">
+<div class="slip">
+  <img src="<%=alias%>.jpg"/>
+  <div class="slip-details">
+    <table>
+      <tr>
+        <th>Pseudonym:</th>
+        <td><%=alias%></td>
+      </tr>
+      <tr>
+        <th>Sequence:</th>
+        <td class="sequence"><%=sequence%></td>
+      </tr>
+    </table>
+    <p>Please wait 1 second between each button press.</p>
+    <p>Press E at any time to cancel or start over.</p>
+  </div>
+</div>
+</script>
+<script src="../../../vendor/lodash/lodash.js"></script>
+<script>
+var sequenceMap={
+  "AAAD":"leo",
+  "AABC":"martha",
+  "AACA":"jordan",
+  "AADB":"zooey",
+  "ABAA":"angie",
+  "ABBB":"perry",
+  "ABCD":"stiller",
+  "ABDC":"pink",
+  "ACAC":"halle",
+  "ACBD":"lopez",
+  "ACCB":"marilyn",
+  "ACDA":"spears",
+  "ADAB":"aniston",
+  "ADBA":"spock",
+  "ADCC":"freeman",
+  "ADDD":"pitt",
+  "BAAA":"will",
+  "BABB":"lucy",
+  "BACD":"rihanna",
+  "BADC":"cera",
+  "BBAD":"swift",
+  "BBBC":"depp",
+  "BBCA":"adele",
+  "BBDB":"gosling",
+  "BCAB":"jackson",
+  "BCBA":"keanu",
+  "BCCC":"potter",
+  "BCDD":"cruise",
+  "BDAC":"arnie",
+  "BDBD":"diaz",
+  "BDCB":"murray",
+  "BDDA":"cruz",
+  "CAAB":"bee",
+  "CABA":"leia",
+  "CACC":"hova",
+  "CADD":"scarjo",
+  "CBAC":"audrey",
+  "CBBD":"elvis",
+  "CBCB":"deniro",
+  "CBDA":"rdj",
+  "CCAA":"holmes",
+  "CCBB":"timber",
+  "CCCD":"gates",
+  "CCDC":"yeezy",
+  "CDAD":"jobs",
+  "CDBC":"fey",
+  "CDCA":"owen",
+  "CDDB":"whoopi",
+  "DAAC":"portman",
+  "DABD":"julia",
+  "DACB":"alba",
+  "DADA":"liz",
+  "DBAB":"maddy",
+  "DBBA":"vaughn",
+  "DBCC":"oprah",
+  "DBDD":"gaga",
+  "DCAD":"ellen",
+  "DCBC":"marley",
+  "DCCA":"ford",
+  "DCDB":"bruce",
+  "DDAA":"carrey",
+  "DDBB":"bond",
+  "DDCD":"samuel",
+  "DDDC":"mila"
+};
+
+var template=_.template(document.getElementById("slip-template").innerHTML);
+var slipsPerPage = 4;
+var count = 0;
+for (var key in sequenceMap) {
+  addSlip(key, sequenceMap[key]);
+  count += 1;
+  if (count % slipsPerPage === 0) {
+    var pagebreak = document.createElement("div");
+    pagebreak.className="pagebreak";
+    document.body.appendChild(pagebreak);
+  }
+}
+
+function addSlip(sequence, alias) {
+  var container = document.createElement("div");
+  container.innerHTML = template({ sequence: sequence, alias: alias });
+  document.body.appendChild(container);
+}
+</script>
+    </body>
+
+</html>
