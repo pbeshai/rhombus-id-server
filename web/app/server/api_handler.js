@@ -18,9 +18,24 @@ function initialize(site, initConfig) {
 	site.put("/api/alias", updateAliases);
 	site.get("/api/alias", listAliases);
 	site.delete("/api/alias", deleteAliases);
+	site.delete("/api/alias/:id", deleteAlias);
 
 	initConfig = initConfig || {};
 	_.extend(dbConfig, initConfig.database);
+}
+
+function deleteAlias(req, res) {
+	console.log("deleting one alias", req.params.id);
+	dbCall(function (db) {
+		db.run("DELETE FROM alias WHERE id = ?", req.params.id, function (err) {
+			if (err) {
+				console.log(err);
+				res.send(500);
+			} else {
+				res.send(200, "");
+			}
+		});
+	});
 }
 
 function deleteAliases(req, res) {

@@ -42,6 +42,16 @@ function(app) {
 	Alias.Views.TableItem = Backbone.View.extend({
 		template: "app/templates/alias/table_item",
 		tagName: "tr",
+		events: {
+			"click .remove-alias": "removeAlias"
+		},
+
+		removeAlias: function () {
+			var verify = confirm("Are you sure you want to delete " + this.model.get("participantId") + " -> " + this.model.get("alias"));
+			if (verify) {
+				this.model.destroy();
+			}
+		},
 
 		serialize: function () {
 			return {
@@ -72,7 +82,11 @@ function(app) {
 		},
 
 		initialize: function () {
-			this.listenTo(this.collection, "reset", this.render);
+			this.listenTo(this.collection, {
+				"reset": this.render,
+				"remove": this.render,
+				"add": this.render
+			});
 		}
 	});
 

@@ -215,9 +215,27 @@ function(app, Alias) {
 		events: {
 			"click .manual-reg-btn" : "manualRegistration",
 			"click .auto-reg-btn" : "autoRegistration",
+			"click .delete-aliases-btn" : "deleteAliases"
 		},
 
-		serialize: function () {
+		deleteAliases: function () {
+			var verify = confirm("Are you sure you want to delete all aliases?");
+			var collection = this.collection;
+
+			if (verify) {
+				console.log("deleting all aliases");
+				App.api({
+					call: "alias",
+					type: "DELETE",
+					success: function () {
+						console.log("successful deletion of aliases");
+						collection.reset();
+					},
+					error: function () {
+						console.log("error deleting aliases");
+					}
+				});
+			}
 		},
 
 		beforeRender: function () {
