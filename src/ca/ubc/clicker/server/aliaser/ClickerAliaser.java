@@ -10,6 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import ca.ubc.clicker.client.ClickerClient;
 import ca.ubc.clicker.server.aliaser.util.SqlUtil;
 import ca.ubc.clicker.server.io.BaseIOServer;
@@ -24,12 +27,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class ClickerAliaser extends BaseIOServer {
+	private static Logger log = LogManager.getLogger();
+	private static Logger clicksLog = LogManager.getLogger("clicks");
+	
 	private static final int DEFAULT_PORT = 4445;
 	private static final int DEFAULT_CLICKER_SERVER_PORT = 4444;
 	private static final String DEFAULT_CLICKER_SERVER_HOST = "localhost";
 	private static final String ALIAS_TABLE = "alias";
 	private static final String ALIAS_TABLE_FILE = "sql/create.sql";
 	private static final String DATABASE_NAME = "aliaser.db";
+	private static final String PING = "{\"command\":\"ping\"}";
 	
 	private static final String SQL_SELECT_ALIAS = "SELECT alias FROM alias WHERE participantId=?";
 	
@@ -74,7 +81,7 @@ public class ClickerAliaser extends BaseIOServer {
 			// create alias table if it does not exist
 			SqlUtil.createTableSafe(connection, ALIAS_TABLE, ALIAS_TABLE_FILE);
 		} catch(SQLException e) {
-			System.err.println(e.getMessage());
+			log.error(e.getMessage());
 		} finally {
 			try	{
 				if(connection != null) {
@@ -82,7 +89,7 @@ public class ClickerAliaser extends BaseIOServer {
 				}
 			} catch(SQLException e) {
 				// connection close failed.
-				System.err.println(e);
+				log.error(e);
 			}
 		}
 	}
@@ -129,15 +136,22 @@ public class ClickerAliaser extends BaseIOServer {
 			connection = getDatabaseConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALIAS);
 			
-			// create alias table if it does not exist
+			// use alias instead of id for each choice
 			for (int i = 0; i < data.size(); i++) {
 				// convert to object and change attribute value
 				choices[i] =  gson.fromJson(data.get(i), ChoiceMessage.class);
+				String originalId = choices[i].id;
 				choices[i].id = getAlias(preparedStatement, choices[i].id);
-				System.out.println(choices[i].id + " " + choices[i].choice);
+				
+				// log the result
+				if (originalId.equals(choices[i].id)) {
+					clicksLog.info("{}:{}", choices[i].id, choices[i].choice);
+				} else {
+					clicksLog.info("{}:{} ({})", choices[i].id, choices[i].choice, originalId);
+				}
 			}
 		} catch(SQLException e) {
-			System.err.println(e.getMessage());
+			log.error(e.getMessage());
 		} finally {
 			try	{
 				if(connection != null) {
@@ -145,7 +159,7 @@ public class ClickerAliaser extends BaseIOServer {
 				}
 			} catch(SQLException e) {
 				// connection close failed.
-				System.err.println(e);
+				log.error(e);
 			}
 		}
 	
@@ -165,7 +179,10 @@ public class ClickerAliaser extends BaseIOServer {
 	
 	@Override
 	public void input(String message, ClickerClient client) {
-		System.out.println("INPUT: "+message+", client: "+client);
+		if (!PING.equals(message)) {
+			log.info("[input] {}, client: {}", message, client);
+		}
+		
 		outClickerServer.println(message);	
 	}
 	
