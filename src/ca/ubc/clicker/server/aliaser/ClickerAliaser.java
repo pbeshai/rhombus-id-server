@@ -180,7 +180,7 @@ public class ClickerAliaser extends BaseIOServer {
 	@Override
 	public void input(String message, ClickerClient client) {
 		if (!PING.equals(message)) {
-			log.info("[input] {}, client: {}", message, client);
+			log.info("[input] {}", message);
 		}
 		
 		outClickerServer.println(message);	
