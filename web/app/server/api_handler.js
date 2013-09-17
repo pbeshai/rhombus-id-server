@@ -6,7 +6,8 @@ module.exports = {
 
 var fs = require('fs'),
 		_ = require('lodash'),
-		sqlite3 = require('sqlite3').verbose();
+		sqlite3 = require('sqlite3').verbose(),
+		logger = require("../../log/logger");
 
 var dbConfig = {
 		file: "../aliaser.db",
@@ -25,11 +26,11 @@ function initialize(site, initConfig) {
 }
 
 function deleteAlias(req, res) {
-	console.log("deleting one alias", req.params.id);
+	logger.info("deleting one alias " + req.params.id);
 	dbCall(function (db) {
 		db.run("DELETE FROM alias WHERE id = ?", req.params.id, function (err) {
 			if (err) {
-				console.log(err);
+				logger.error(err);
 				res.send(500);
 			} else {
 				res.send(200, "");
@@ -39,12 +40,12 @@ function deleteAlias(req, res) {
 }
 
 function deleteAliases(req, res) {
-	console.log("deleting all aliases");
+	logger.info("deleting all aliases");
 
 	dbCall(function (db) {
 		db.run("DELETE FROM alias", function (err) {
 			if (err) {
-				console.log(err);
+				logger.error(err);
 				res.send(500);
 			} else {
 				res.send(200, "");
@@ -54,13 +55,13 @@ function deleteAliases(req, res) {
 }
 
 function updateAliases(req, res) {
-	console.log("UPDATE ALIASES");
+	logger.info("UPDATE ALIASES");
 	return registerAliases(req, res);
 }
 
 // supports either an array of aliases or an object (single alias)
 function registerAliases(req, res) {
-	console.log("saving aliases", req.body);
+	logger.info("saving aliases", {requestBody: req.body});
 
 	if (req.body == null) return;
 
@@ -77,7 +78,7 @@ function registerAliases(req, res) {
 		insert();
 
 		function insert() {
-			console.log("insert");
+			logger.info("insert");
 			_.each(participants, function (participant) {
 				// TODO: probably should be more secure....
 				var params = {
@@ -89,13 +90,13 @@ function registerAliases(req, res) {
 						if (err.errno === 19 && err.toString().match("column alias is not unique")) {
 							// somebody has this alias (possibly this participantId)
 							checkDuplicates.push(params);
-							console.log("alias not unique", params);
+							logger.warn("alias not unique", {params: params});
 						} else if (err.errno === 19 && err.toString().match("column participantId is not unique")) {
 							// update the participantId to use the new alias
 							updates.push(params);
-							console.log("participantId not unique", params);
+							logger.warn("participantId not unique", {params: params});
 						}	else {
-							console.log("error", err, params);
+							logger.error("error", {err: err, params: params});
 							errors.push(err);
 						}
 					}
@@ -115,10 +116,10 @@ function registerAliases(req, res) {
 		}
 
 		function update() {
-			console.log("update", updates);
+			logger.info("update %j", updates);
 			_.each(updates, function (params) {
 				updateStatement.run(params, function (err) {
-					console.log("ran update", this.changes, params);
+					logger.info("ran update", {changes: this.changes, params: params});
 					if (err) {
 						errors.push(err);
 					}
@@ -135,14 +136,14 @@ function registerAliases(req, res) {
 		}
 
 		function check() {
-			console.log("check", checkDuplicates);
+			logger.info("check ", {checkDuplicates: checkDuplicates });
 			_.each(checkDuplicates, function (params) {
 				checkStatement.get(params, function (err, row) {
-					console.log("ran check", err, this.changes, params);
+					logger.info("ran check", {err: err, changes: this.changes, params: params});
 					if (row["count(*)"]) {
-						console.log("ALREADY IN DB", params);
+						logger.info("ALREADY IN DB", {params: params});
 					} else {
-						console.log("ALIAS DUPLICATED ERROR", params);
+						logger.info("ALIAS DUPLICATED ERROR", {params: params});
 						duplicates.push({ alias: params.$alias, participantId: params.$participantId });
 					}
 					if (err) {
@@ -155,13 +156,13 @@ function registerAliases(req, res) {
 		}
 
 		function sendResponse(err) {
-			console.log("sending response");
+			logger.info("sending response");
 			if (err || errors.length) {
 				if (err) {
-					console.log(err);
+					logger.error(err);
 				}
 				if (errors.length) {
-					console.log(errors);
+					logger.error(errors);
 				}
 
 				res.send(500);
@@ -192,14 +193,14 @@ function dbCall(callback) {
 		var db = new sqlite3.Database(dbConfig.file);
 
 		if (!exists) {
-			console.log("this database does not exist");
+			logger.info("this database does not exist");
 
 			fs.readFile(dbConfig.create, "utf8", function (err, data) {
 				if (err) throw err;
 
 				db.exec(data, function (err) {
 					if (err) throw err;
-					console.log("finished running db create script", dbConfig.create);
+					logger.info("finished running db create script " + dbConfig.create);
 				});
 
 				// db setup

@@ -158,6 +158,7 @@ function (App, Common, Participant, StateApp, Alias) {
 		header: "Sequence Aliaser",
 		InstructionsModel: SequenceAliaser.Instructions,
 		ParticipantView: SequenceAliaser.Views.Participant,
+		ParticipantsView: Common.Views.ParticipantsGrid.extend({ insertSorted: false }),
 		acceptNew: true,
 		noParticipantsMessage: "",
 	}));
@@ -212,7 +213,8 @@ function (App, Common, Participant, StateApp, Alias) {
 			participant.set({ sequence: null, seqAlias: null, action: "E" });
 		},
 
-		updateSequence: function (participant, choice) {
+		updateSequence: function (participant) {
+			var choice = participant.get("choice");
 			participant.set("action", null, { silent: true });
 
 			if (choice === "E") {
@@ -258,7 +260,7 @@ function (App, Common, Participant, StateApp, Alias) {
 
 			// listen for setting play
 			this.stopListening();
-			this.listenTo(participants, "update:choice", this.updateSequence);
+			this.listenTo(participants, "update:choice add", this.updateSequence);
 		},
 
 		onEntry: function (input) {
@@ -298,6 +300,7 @@ function (App, Common, Participant, StateApp, Alias) {
 		name: "register",
 		view: "seq-alias::register",
 		beforeRender: function () {
+
 			Common.States.Results.prototype.beforeRender.call(this);
 
 			var aliases = this.participants.map(function (p) {
@@ -311,7 +314,7 @@ function (App, Common, Participant, StateApp, Alias) {
 			// save to the database and update the participants to show if they were saved successfully
 			aliasCollection.save({ success: function (collection, data) {
 				var duplicates = _.pluck(data.duplicates, "participantId");
-
+				App.controller.participantUpdater.stopIgnoringChanges();
 				participants.each(function (p) {
 					if (_.contains(duplicates, p.get("alias"))) {
 						p.set("saved", false);
@@ -319,7 +322,14 @@ function (App, Common, Participant, StateApp, Alias) {
 						p.set("saved", true);
 					}
 				});
+				// ignore any further changes
+				App.controller.participantUpdater.ignoreChanges();
 			}});
+		},
+
+		afterRender: function () {
+			Common.States.Results.prototype.afterRender.call(this);
+			App.controller.participantUpdater.ignoreChanges(); // no changes in this state.
 		},
 
 		cleanup: function () {

@@ -26,7 +26,7 @@ function (App, StateApp, CommonStateApps, SequenceAliaser) {
 	// description for use in router
 	SequenceAliaserApp.app = {
 		instantiate: function (attrs) {
-			return new SequenceAliaserApp(attrs, { writeLogAtEnd: false });
+			return new SequenceAliaserApp(attrs, { writeLogAtEnd: false, autoAddNew: true });
 		},
 		AppControlsView: SequenceAliaser.Views.AppControls,
 		title: "Sequence Aliaser"
