@@ -6,7 +6,8 @@
     "grunt": "0.4.1",
     "sqlite3": "2.1.7",
     "async": "0.2.9",
-    "winston": "~0.7.2"
+    "winston": "~0.7.2",
+    "moment": "~2.2.1"
   },
   "devDependencies": {
     "grunt-contrib": "~0.7.0",
