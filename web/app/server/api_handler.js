@@ -181,7 +181,8 @@ function registerAliases(req, res) {
 function listAliases(req, res) {
 	// list all aliases
 	dbCall(function (db) {
-		db.all("SELECT * FROM alias", function (err, rows) {
+		// order by id DESC to get newest at top
+		db.all("SELECT * FROM alias ORDER BY id DESC", function (err, rows) {
 			res.send(rows);
 		});
 	});
