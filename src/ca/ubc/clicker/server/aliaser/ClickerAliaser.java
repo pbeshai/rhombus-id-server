@@ -1,5 +1,6 @@
 package ca.ubc.clicker.server.aliaser;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,11 +36,13 @@ public class ClickerAliaser extends BaseIOServer {
 	private static final int DEFAULT_CLICKER_SERVER_PORT = 4444;
 	private static final String DEFAULT_CLICKER_SERVER_HOST = "localhost";
 	private static final String ALIAS_TABLE = "alias";
-	private static final String ALIAS_TABLE_FILE = "sql/create.sql";
+	private static final String ALIAS_TABLE_FILE = "/sql/create.sql"; // classpath file
 	private static final String DATABASE_NAME = "aliaser.db";
 	private static final String PING = "{\"command\":\"ping\"}";
 	
 	private static final String SQL_SELECT_ALIAS = "SELECT alias FROM alias WHERE participantId=?";
+
+	private static final String CONFIG_PROPERTIES_FILE = "config.properties";
 	
 	private String clickerServerHost;
 	private int clickerServerPort;
@@ -47,11 +51,11 @@ public class ClickerAliaser extends BaseIOServer {
     private GsonBuilder gsonBuilder;
     
 	public ClickerAliaser() {
-		this(DEFAULT_CLICKER_SERVER_HOST, DEFAULT_CLICKER_SERVER_PORT);
+		this(DEFAULT_PORT, DEFAULT_CLICKER_SERVER_HOST, DEFAULT_CLICKER_SERVER_PORT);
 	}
 	
-	public ClickerAliaser(String clickerServerHost, int clickerServerPort) {
-		super(DEFAULT_PORT);
+	public ClickerAliaser(int port, String clickerServerHost, int clickerServerPort) {
+		super(port);
 		this.clickerServerHost = clickerServerHost;
 		this.clickerServerPort = clickerServerPort;
 		this.gsonBuilder = new GsonBuilder();
@@ -194,7 +198,23 @@ public class ClickerAliaser extends BaseIOServer {
 		// load the sqlite-JDBC driver using the current class loader
 		Class.forName("org.sqlite.JDBC");
 		
-		ClickerAliaser aliaser = new ClickerAliaser();
+		int port = DEFAULT_PORT, clickerServerPort = DEFAULT_CLICKER_SERVER_PORT;
+		String clickerServerHost = DEFAULT_CLICKER_SERVER_HOST;
+		
+		// read from config.properties file
+		Properties config = new Properties();
+		try {
+			config.load(new FileInputStream(CONFIG_PROPERTIES_FILE));
+			port = Integer.valueOf(config.getProperty("port", String.valueOf(DEFAULT_PORT)));
+			clickerServerPort = Integer.valueOf(config.getProperty("clickerServerPort", String.valueOf(DEFAULT_CLICKER_SERVER_PORT)));
+			clickerServerHost = config.getProperty("clickerServerHost", DEFAULT_CLICKER_SERVER_HOST);
+		} catch (IOException e) {
+			log.error("Could not find config.properties");
+		}
+		
+		log.info("Initializing with port " + port + ", clicker server " + clickerServerHost +  ":" + clickerServerPort);
+		
+		ClickerAliaser aliaser = new ClickerAliaser(port, clickerServerHost, clickerServerPort);
 		aliaser.run();
 	}
 }

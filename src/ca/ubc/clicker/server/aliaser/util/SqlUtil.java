@@ -1,7 +1,8 @@
 package ca.ubc.clicker.server.aliaser.util;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -17,7 +18,11 @@ public class SqlUtil {
 		// create alias table if it does not exist
 		ResultSet rs = statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='" + table + "'");
 		if (rs.next() && rs.getInt(1) == 0) {
-			runner.runScript(new FileReader(sqlFile));
+			System.out.println(sqlFile);
+			InputStream input = SqlUtil.class.getResourceAsStream(sqlFile);
+			System.out.println(input);
+			System.out.println(SqlUtil.class.getResource(sqlFile));;
+			runner.runScript(new InputStreamReader(input));
 		}
 	}
 }
