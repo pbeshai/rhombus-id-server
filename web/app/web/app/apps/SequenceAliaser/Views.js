@@ -81,6 +81,10 @@ function (App, Common, SequenceAliaser) {
 
 	SequenceAliaserViews.Register = {};
 	SequenceAliaserViews.Register.Participant = Common.Views.ParticipantDisplay.extend({
+		cssClass: function (model) {
+			return "big-message";
+		},
+
 		overlay: function (model) {
 			if (model.get("saved")) {
 				return "green";
