@@ -237,7 +237,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-stylus');
 
-	grunt.registerTask("default", ["jshint", "socket-server:dev"]);
+	grunt.registerTask("default", ["socket-server:dev"]);
 
 	grunt.registerTask("dev", "socket-server:dev");
 
