@@ -80,6 +80,8 @@ require.config({
     "vendor/d3/rickshaw": {
       deps: ['d3', 'vendor/d3/d3.layout'],
       exports: 'Rickshaw'
-    }
+    },
+
+    "jquery/jquery.scrollTo": ["jquery"]
   },
 });

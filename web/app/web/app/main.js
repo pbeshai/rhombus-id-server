@@ -6,7 +6,7 @@ require([
 
   "Router",
 
-  "apps/Apps"
+  "/api/apps", // get the dynamically generated dependencies for apps
 ],
 
 function (frameworkMain, App, Router, Apps) {

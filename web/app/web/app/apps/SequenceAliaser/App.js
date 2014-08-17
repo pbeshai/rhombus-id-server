@@ -3,10 +3,9 @@ define([
 	// Application.
 	"framework/App",
 
-	"framework/apps/StateApp",
-
+	"framework/modules/StateApp/Module",
 	"framework/modules/common/CommonStateApps",
-	"modules/SequenceAliaser"
+	"apps/SequenceAliaser/Module"
 ],
 
 function (App, StateApp, CommonStateApps, SequenceAliaser) {
