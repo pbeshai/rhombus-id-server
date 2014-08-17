@@ -1,4 +1,4 @@
-package ca.ubc.clicker.server.aliaser;
+package ca.ubc.clicker.server.id;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ca.ubc.clicker.client.ClickerClient;
-import ca.ubc.clicker.server.aliaser.util.SqlUtil;
+import ca.ubc.clicker.server.id.util.SqlUtil;
 import ca.ubc.clicker.server.io.BaseIOServer;
 import ca.ubc.clicker.server.io.ClickerServerInputThread;
 import ca.ubc.clicker.server.messages.ChoiceMessage;
@@ -28,7 +28,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class ClickerAliaser extends BaseIOServer {
+public class IdServer extends BaseIOServer {
 	private static Logger log = LogManager.getLogger();
 	private static Logger clicksLog = LogManager.getLogger("clicks");
 	
@@ -37,7 +37,7 @@ public class ClickerAliaser extends BaseIOServer {
 	private static final String DEFAULT_CLICKER_SERVER_HOST = "localhost";
 	private static final String ALIAS_TABLE = "alias";
 	private static final String ALIAS_TABLE_FILE = "/sql/create.sql"; // classpath file
-	private static final String DATABASE_NAME = "aliaser.db";
+	private static final String DATABASE_NAME = "aliases.db";
 	private static final String PING = "{\"command\":\"ping\"}";
 	
 	private static final String SQL_SELECT_ALIAS = "SELECT alias FROM alias WHERE participantId=?";
@@ -50,11 +50,11 @@ public class ClickerAliaser extends BaseIOServer {
     private JsonParser parser;
     private GsonBuilder gsonBuilder;
     
-	public ClickerAliaser() {
+	public IdServer() {
 		this(DEFAULT_PORT, DEFAULT_CLICKER_SERVER_HOST, DEFAULT_CLICKER_SERVER_PORT);
 	}
 	
-	public ClickerAliaser(int port, String clickerServerHost, int clickerServerPort) {
+	public IdServer(int port, String clickerServerHost, int clickerServerPort) {
 		super(port);
 		this.clickerServerHost = clickerServerHost;
 		this.clickerServerPort = clickerServerPort;
@@ -66,8 +66,14 @@ public class ClickerAliaser extends BaseIOServer {
 	public void init() throws IOException {
 		super.init();
 		
-		Socket clickerServer = new Socket(clickerServerHost, clickerServerPort);
-		outClickerServer = new PrintWriter(clickerServer.getOutputStream(), true);
+		Socket clickerServer = null;
+		try { 
+			clickerServer = new Socket(clickerServerHost, clickerServerPort);
+			outClickerServer = new PrintWriter(clickerServer.getOutputStream(), true);
+		} catch(IOException e) {
+			log.error("Could not connect to Clicker Server at " + clickerServerHost + ":" + clickerServerPort + ". Exiting...");
+			throw e;
+		}
 		
 		// start thread to read input from clicker server
 		new ClickerServerInputThread(clickerServer.getInputStream(), this);
@@ -191,7 +197,7 @@ public class ClickerAliaser extends BaseIOServer {
 	}
 	
 	/**
-	 * Usage: java ClickerAliaser
+	 * Usage: java IdServer
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
@@ -214,7 +220,7 @@ public class ClickerAliaser extends BaseIOServer {
 		
 		log.info("Initializing with port " + port + ", clicker server " + clickerServerHost +  ":" + clickerServerPort);
 		
-		ClickerAliaser aliaser = new ClickerAliaser(port, clickerServerHost, clickerServerPort);
-		aliaser.run();
+		IdServer server = new IdServer(port, clickerServerHost, clickerServerPort);
+		server.run();
 	}
 }

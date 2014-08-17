@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import ca.ubc.clicker.server.aliaser.util.SqlRunner;
+import ca.ubc.clicker.server.id.util.SqlRunner;
 
 public class SQLTest
 {

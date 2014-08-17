@@ -1,4 +1,4 @@
-package ca.ubc.clicker.server.aliaser.util;
+package ca.ubc.clicker.server.id.util;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
